@@ -17,14 +17,21 @@ public class Invoice {
     private Long id;
 
     private String description;
-    private String total;
+    private Long total;
 
 
     /**Un cliente puede tener varias facturas. Por eso es ManyToOne */
     /**El Many en este caso apunta a Invoice que es la clase donde esta */
     /**Esto se relacionara con el id del cliente de la clase Client */
     @ManyToOne
+    @JoinColumn(name = "id_client_temp")
     private Client client;
+
+    /**Constructor personalizado */
+    public Invoice(String description, Long total) {
+        this.description = description;
+        this.total = total;
+    }
 
     @Override
     public String toString() {
