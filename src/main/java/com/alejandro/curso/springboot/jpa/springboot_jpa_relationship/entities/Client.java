@@ -23,7 +23,7 @@ public class Client {
     /** Relacion de uno a muchos (un cliente puede tener varias direcciones) */
     // Con esta relacion se crea una tabla intermedia entre cliente y dirección
     // Explicacion de CascadeType.ALL: En caso de borrar un cliente se borran sus direcciones y viceversa
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     // @JoinColumn(name = "id_client") // Es la columna de la tabla intermedia, asi se maneja todo en direcciones.
     @JoinTable(name ="tbl_clientes_to_direcciones", joinColumns = @JoinColumn(name = "id_client"), 
     inverseJoinColumns = @JoinColumn(name = "id_address") ,
