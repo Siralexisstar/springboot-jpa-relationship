@@ -1,6 +1,8 @@
 package com.alejandro.curso.springboot.jpa.springboot_jpa_relationship;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -33,7 +35,47 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner {
 		// manyToOneFindById();
 		// oneToMany();
 		// removeAddress();
-		removeAddressFindById();
+		// removeAddressFindById();
+		// OnteToManyBidireccional();
+		oneToManyBidireccionalFindById();
+	}
+
+	@Transactional
+	public void oneToManyBidireccionalFindById() {
+		Optional<Client> optionalClient = clientRepository.findOne(1L);
+
+		//Recuperamos el client de la bbdd
+		optionalClient.ifPresent(client -> {
+
+			Invoice invoice1 = new Invoice("Compras amazon", 250L);
+			Invoice invoice2 = new Invoice("Compras para Zeus", 100L);
+
+			/** Fijarse en el metodo addInvoice de la clase Client */
+			client.addInvoice(invoice1)
+					.addInvoice(invoice2);
+
+			clientRepository.save(client);
+
+			System.out.println(client);
+		});
+
+	}
+
+	@Transactional
+	public void oneToManyBidireccional() {
+		Client client = new Client("Pepetin", "Palotes");
+
+		Invoice invoice1 = new Invoice("Compras de la casa", 35000L);
+		Invoice invoice2 = new Invoice("Compras de comida", 42000L);
+
+		/** Fijarse en el metodo addInvoice de la clase Client */
+		client.addInvoice(invoice1)
+				.addInvoice(invoice2);
+
+		clientRepository.save(client);
+
+		System.out.println(client);
+
 	}
 
 	@Transactional
@@ -45,8 +87,11 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner {
 			Address address1 = new Address("Passeig del Canal", 13);
 			Address address2 = new Address("Carrer del comerç", 66);
 
-			client.getAddresses().add(address1);
-			client.getAddresses().add(address2);
+			Set <Address> addresses = new HashSet<>();
+			addresses.add(address1);
+			addresses.add(address2);
+
+			client.setAddresses(addresses);
 
 			/** Guardamos el elemento cliente */
 			clientRepository.save(client);
@@ -55,7 +100,7 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner {
 			System.out.println(client);
 
 			// Recuperamos el cliente actualizado para eliminar la dirección
-			Optional<Client> updatedClient = clientRepository.findOne(1L);
+			Optional<Client> updatedClient = clientRepository.findOneWithAddresses(1L);
 			updatedClient.ifPresent(clientDB -> {
 				// Buscar la dirección que queremos eliminar
 				Address addressToRemove = clientDB.getAddresses().stream()
@@ -85,8 +130,12 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner {
 			Address address1 = new Address("Passeig del Canal", 13);
 			Address address2 = new Address("Carrer del comerç", 66);
 
-			client.getAddresses().add(address1);
-			client.getAddresses().add(address2);
+			Set<Address> addresses = new HashSet<>();
+			addresses.add(address1);
+			addresses.add(address2);
+
+			//seteamos las direcciones al cliente
+			client.setAddresses(addresses);
 
 			/** Guardamos el elemento cliente */
 			clientRepository.save(client);
